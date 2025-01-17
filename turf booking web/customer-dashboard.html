@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Turf Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .turf-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+        }
+        .turf-card {
+            background: white;
+            width: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .turf-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .turf-card h3 {
+            margin: 10px 0;
+        }
+        .turf-card p {
+            margin: 0 10px 10px;
+            color: #555;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .turf-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Customer Dashboard</h1>
+    </header>
+
+    <div class="turf-container" id="turfContainer">
+        <!-- Turfs will be dynamically added here -->
+    </div>
+
+    <script>
+        const defaultTurfs = [
+            {
+                turfName: "7-A-Side Football Turf",
+                location: "Mumbai",
+                price: 2000,
+                availability: "9 AM - 9 PM",
+                imageUrl: "https://5.imimg.com/data5/SELLER/Default/2023/10/350327019/NU/WB/TZ/38215148/7-a-side-football-turf.jpg"
+            },
+            {
+                turfName: "Game City Turf",
+                location: "Chennai",
+                price: 1500,
+                availability: "6 AM - 10 PM",
+                imageUrl: "https://turftown.s3.ap-south-1.amazonaws.com/super_admin/tt-1727768803485.webp"
+            },
+            {
+                turfName: "Outdoor Cricket Turf",
+                location: "Delhi",
+                price: 2500,
+                availability: "8 AM - 8 PM",
+                imageUrl: "https://5.imimg.com/data5/SELLER/Default/2023/6/319644438/HZ/LO/QF/191318154/artificial-green-turf-grass-for-outdoor.jpeg"
+            }
+        ];
+
+        function displayTurfs() {
+            const turfContainer = document.getElementById('turfContainer');
+            const turfs = JSON.parse(localStorage.getItem('turfs')) || defaultTurfs;
+            turfContainer.innerHTML = ''; // Clear existing content
+
+            turfs.forEach((turf) => {
+                const turfCard = document.createElement('div');
+                turfCard.className = 'turf-card';
+                turfCard.innerHTML = `
+                    <img src="${turf.imageUrl}" alt="${turf.turfName}">
+                    <h3>${turf.turfName}</h3>
+                    <p>Location: ${turf.location}</p>
+                    <p>Price: ₹${turf.price}/hr</p>
+                    <p>Availability: ${turf.availability}</p>
+                    <a href="#" class="btn">Book Now</a>
+                `;
+                turfContainer.appendChild(turfCard);
+            });
+        }
+
+        window.onload = displayTurfs;
+    </script>
+</body>
+</html>

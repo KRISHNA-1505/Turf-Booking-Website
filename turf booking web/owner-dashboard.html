@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - Turf Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://turftown.s3.ap-south-1.amazonaws.com/super_admin/tt-1727768803485.webp') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .turf-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+        }
+        .turf-card {
+            background: white;
+            width: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .turf-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .turf-card h3 {
+            margin: 10px 0;
+        }
+        .turf-card p {
+            margin: 0 10px 10px;
+            color: #555;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        .turf-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Owner Dashboard</h1>
+        <p>Add your turfs and manage your turf details!</p>
+    </header>
+
+    <div class="form-container">
+        <h2>Add a New Turf</h2>
+        <form id="turfForm">
+            <input type="text" id="turfName" placeholder="Turf Name" required>
+            <input type="text" id="location" placeholder="Location" required>
+            <input type="number" id="price" placeholder="Price per Hour (₹)" required>
+            <input type="text" id="availability" placeholder="Availability (e.g., 9 AM - 9 PM)" required>
+            <input type="url" id="imageUrl" placeholder="Image URL" required>
+            <button type="submit">Add Turf</button>
+        </form>
+    </div>
+
+    <div class="turf-container" id="turfContainer">
+        <!-- Turfs will be dynamically added here -->
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('turfForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form data
+            const turfName = document.getElementById('turfName').value;
+            const location = document.getElementById('location').value;
+            const price = document.getElementById('price').value;
+            const availability = document.getElementById('availability').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+
+            const newTurf = {
+                turfName,
+                location,
+                price,
+                availability,
+                imageUrl
+            };
+
+            // Get existing turfs from localStorage
+            const turfs = JSON.parse(localStorage.getItem('turfs')) || [];
+            turfs.push(newTurf);
+            localStorage.setItem('turfs', JSON.stringify(turfs));
+
+            // Clear form fields after submission
+            document.getElementById('turfForm').reset();
+
+            // Refresh the list of turfs after adding
+            displayTurfs();
+
+            alert("Turf added successfully!");
+        });
+
+        // Function to display turfs
+        function displayTurfs() {
+            const turfContainer = document.getElementById('turfContainer');
+            const turfs = JSON.parse(localStorage.getItem('turfs')) || [];
+
+            // Clear the container
+            turfContainer.innerHTML = '';
+
+            // Loop through turfs and display them
+            turfs.forEach((turf, index) => {
+                const turfCard = document.createElement('div');
+                turfCard.className = 'turf-card';
+                turfCard.innerHTML = `
+                    <img src="${turf.imageUrl}" alt="${turf.turfName}">
+                    <h3>${turf.turfName}</h3>
+                    <p>Location: ${turf.location}</p>
+                    <p>Price: ₹${turf.price}/hr</p>
+                    <p>Availability: ${turf.availability}</p>
+                    <a href="#" class="delete-btn" onclick="deleteTurf(${index})">Delete Turf</a>
+                `;
+                turfContainer.appendChild(turfCard);
+            });
+        }
+
+        // Function to delete a turf
+        function deleteTurf(index) {
+            const turfs = JSON.parse(localStorage.getItem('turfs')) || [];
+
+            // Remove the selected turf
+            turfs.splice(index, 1);
+
+            // Save updated turfs back to localStorage
+            localStorage.setItem('turfs', JSON.stringify(turfs));
+
+            // Refresh the list of turfs after deletion
+            displayTurfs();
+        }
+
+        // Display turfs when the page loads
+        window.onload = displayTurfs;
+    </script>
+</body>
+</html>
